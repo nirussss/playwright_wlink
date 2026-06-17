@@ -12,7 +12,7 @@ class LoginPage{
     async login(user,pass){
         await this.username.fill(user);
         await this.password.fill(pass);
-        await this.loginBtn.click();
+        await this.loginBtn.click()
 
     }
 }
