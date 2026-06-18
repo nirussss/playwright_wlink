@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 class LoginPage {
   constructor(page) {
     this.page = page;
@@ -9,13 +11,23 @@ class LoginPage {
   async open() {
     await this.page.goto(
       'https://customer-portal.worldlink.com.np/eservice-login',
-      { timeout: 60000 }
+      {
+        timeout: 60000,
+        waitUntil: 'domcontentloaded'
+      }
     );
   }
 
   async login(user, pass) {
+
+    await expect(this.username).toBeVisible();
     await this.username.fill(user);
+
+    await expect(this.password).toBeVisible();
+    await expect(this.password).toBeEnabled();
     await this.password.fill(pass);
+
+    await expect(this.loginBtn).toBeEnabled();
     await this.loginBtn.click();
   }
 }
