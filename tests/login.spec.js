@@ -13,8 +13,10 @@ for (const data of loginData) {
 
     if (data.type === 'valid') {
       await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
-    } else {
+    } else if (data.type === 'invalid') {
       await expect(page.getByText(/invalid/i)).toBeVisible();
+    } else {
+      await expect(page.getByText(/missing/i)).toBeVisible();
     }
 
   });

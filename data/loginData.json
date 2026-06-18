@@ -5,8 +5,29 @@
     "type": "valid"
   },
   {
+    "username": "dipeshjungthapa",
+    "password": "0BrnQc",
+    "type": "valid"
+
+  },
+  {
     "username": "incorrectuser",
     "password": "wrongpass",
     "type": "invalid"
+  },
+  {
+    "username": "123",
+    "password": "wrongpass",
+    "type": "invalid"
+  },
+  {
+    "username": "a123",
+    "password": "",
+     "type": "missing"
+  },
+  {
+    "username": "",
+    "password": "Duwals@77",
+    "type": "missing"
   }
 ]
