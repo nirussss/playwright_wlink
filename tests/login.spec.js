@@ -1,22 +1,22 @@
-import {test,expect} from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import LoginPage from '../pages/LoginPage';
+import loginData from "../data/loginData.json";
 
-test('valid login creds', async ({ page }) => {
-  const login = new LoginPage(page);
+for (const data of loginData) {
 
-  await login.open();
-  await login.login("aakashduwal", "Duwals@77");
+  test(`login test for ${data.username}`, async ({ page }) => {
 
-  // safer than URL check
-  await expect(page.getByText('PERSONAL').isVisible());;
-});
+    const login = new LoginPage(page);
 
+    await login.open();
+    await login.login(data.username, data.password);
 
-test('invalid login creds', async ({ page }) => {
-  const login = new LoginPage(page);
+    if (data.type === 'valid') {
+      await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+    } else {
+      await expect(page.getByText(/invalid/i)).toBeVisible();
+    }
 
-  await login.open();
-  await login.login("wronguser", "wrongpass");
+  });
 
-  await expect(page.getByText(/invalid/i)).toBeVisible();
-});
+}
