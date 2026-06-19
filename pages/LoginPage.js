@@ -5,14 +5,13 @@ class LoginPage {
     this.page = page;
     this.username = page.locator("input[name='username']");
     this.password = page.locator("input[name='password']");
-    this.loginBtn = page.getByRole('button', { name: 'Login' });
+    this.loginBtn = page.getByRole('button', { name: 'Login', exact: true });
   }
 
   async open() {
     await this.page.goto(
-      'https://customer-portal.worldlink.com.np/eservice-login',
+      '/eservice-login',
       {
-        timeout: 60000,
         waitUntil: 'domcontentloaded'
       }
     );
