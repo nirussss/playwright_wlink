@@ -14,6 +14,9 @@ test('Verify primary email is displayed in Contact Update', async ({ page }) => 
     'Duwals@77'
   );
 
+await expect(
+    page.getByRole('img', { name: 'worldlink_logo' })
+  ).toBeVisible({ timeout: 10000 });
   await expect(
     page.getByRole('link', { name: 'Services' })
   ).toBeVisible({timeout:20000});
