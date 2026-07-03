@@ -8,6 +8,7 @@ class LoginPage {
     this.loginBtn = page.getByRole('button', { name: 'Login', exact: true });
     this.directLoginBtn = page.locator('[role="button"][href="/direct_login"]');
     this.googleLoginBtn = page.getByRole('button', { name: 'Login with Google' });
+    this.passwordtoggleicon=page.getByRole('button', { name: 'toggle password visibility' });
   }
 
   async open() {
@@ -34,6 +35,11 @@ class LoginPage {
   async loginWithGoogle() {
     await expect(this.googleLoginBtn).toBeVisible();
     await this.googleLoginBtn.click();
+  }
+
+  async togglePasswordVisibility() {
+    await expect(this.passwordtoggleicon).toBeVisible();
+    await this.passwordtoggleicon.click();
   }
 }
 

@@ -30,11 +30,21 @@ test('Direct login navigation test', async ({ page }) => {
 test('Google login navigation test', async ({ page }) => {
   const login = new LoginPage(page);
   await login.open();
-  
   const popupPromise = page.waitForEvent('popup');
   await login.loginWithGoogle(); 
   const popup = await popupPromise;
-  
   await popup.waitForLoadState('domcontentloaded');
   await expect(popup.locator('body')).toContainText(/Sign in with Google|Email or phone/i);
+});
+
+test('Password visibility toggle test', async ({ page }) => {
+  const login = new LoginPage(page);
+  await login.open(); 
+  
+  await login.password.fill('niru123');
+
+  await expect(login.password).toHaveAttribute('type', 'password');
+
+  await login.togglePasswordVisibility();
+  await expect(login.password).toHaveAttribute('type', 'text');
 });
