@@ -48,13 +48,9 @@ test.describe('Quick Links Navigation Tests', () => {
     });
 
 test('TC-NAV-03: Verify mobile app installation link navigation', async ({ page }) => {
-        // 1. Ensure the card container is visible and ready
         const appCard = page.locator('.MuiCard-root').getByText('MyWorldLink App', { exact: true });
         await appCard.scrollIntoViewIfNeeded();
-
-        // 2. Track the Google Play Store Popup
         const playStorePromise = page.waitForEvent('popup');
-        // Targets the first icon link inside the app card structure
         await page.locator('.MuiCard-root').getByText('MyWorldLink App').locator('svg').first().click();
         const playStorePopup = await playStorePromise;
         await expect(playStorePopup).toHaveURL(/.*play\.google\.com.*/, { timeout: 15000 });
@@ -65,10 +61,7 @@ test('TC-NAV-03: Verify mobile app installation link navigation', async ({ page 
         await quickLinks.clickCard('Payment Method');
       const popup = await popupPromise;
         
-        // 3. FIX: Direct the URL validation against the popup window instead of the core page object
         await expect(popup).toHaveURL(/.*epayment\.worldlink\.com\.np\/new\/internet-payment.*/, { timeout: 15000 });
-        
-        // Best Practice: Close the secondary tab to prevent context leakage or resource drag
         await popup.close();
     });
 
