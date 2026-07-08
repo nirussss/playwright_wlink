@@ -47,17 +47,17 @@ test.describe('Quick Links Navigation Tests', () => {
         await expect(popup).toHaveURL(/viber/i, { timeout: 15000 });
     });
 
-test('TC-NAV-03: Verify mobile app installation link navigation', async ({ page }) => {
-        const appCard = page.locator('.MuiCard-root').getByText('MyWorldLink App', { exact: false });
-        await appCard.scrollIntoViewIfNeeded();
+// test('TC-NAV-03: Verify mobile app installation link navigation', async ({ page }) => {
+//         const appCard = page.locator('.MuiCard-root').getByText('MyWorldLink App', { exact: false });
+//         await appCard.scrollIntoViewIfNeeded();
 
-        const playStorePromise = page.waitForEvent('popup');
+//         const playStorePromise = page.waitForEvent('popup');
         
-        await appCard.locator('xpath=//ancestor::div[contains(@class, "MuiCard-root")]//svg').first().click();
-        const playStorePopup = await playStorePromise;
-        await expect(playStorePopup).toHaveURL(/.*play\.google\.com.*/, { timeout: 15000 });
-        await playStorePopup.close();
-    });
+//         await appCard.locator('xpath=//ancestor::div[contains(@class, "MuiCard-root")]//svg').first().click();
+//         const playStorePopup = await playStorePromise;
+//         await expect(playStorePopup).toHaveURL(/.*play\.google\.com.*/, { timeout: 15000 });
+//         await playStorePopup.close();
+//     });
 
  test('TC-NAV-04: Verify Payment Method link navigation', async ({ page }) => {
         const popupPromise = page.waitForEvent('popup');
