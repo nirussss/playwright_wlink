@@ -48,20 +48,33 @@ test.describe('Quick Links Navigation Tests', () => {
     });
 
 test('TC-NAV-03: Verify mobile app installation link navigation', async ({ page }) => {
-        const appCard = page.locator('.MuiCard-root').getByText('MyWorldLink App', { exact: true });
+        const appCard = page.locator('.MuiCard-root').getByText('MyWorldLink App', { exact: false });
         await appCard.scrollIntoViewIfNeeded();
+
+        // 1. Setup the popup promise listener first
         const playStorePromise = page.waitForEvent('popup');
-        await page.locator('.MuiCard-root').getByText('MyWorldLink App').locator('svg').first().click();
+        
+        // 2. Safely find and click the first SVG icon inside the targeted Card
+        await appCard.locator('xpath=//ancestor::div[contains(@class, "MuiCard-root")]//svg').first().click();
+        
+        // 3. Resolve and assert the popup context
         const playStorePopup = await playStorePromise;
         await expect(playStorePopup).toHaveURL(/.*play\.google\.com.*/, { timeout: 15000 });
         await playStorePopup.close();
     });
 
-    test('TC-NAV-04: Verify Payment Method link navigation', async ({ page }) => {
+ test('TC-NAV-04: Verify Payment Method link navigation', async ({ page }) => {
+        // 1. Capture the new tab/popup window as soon as it spawns
+        const popupPromise = page.waitForEvent('popup');
+
         await quickLinks.clickCard('Payment Method');
-      const popup = await popupPromise;
+
+        const popup = await popupPromise;
         
-        await expect(popup).toHaveURL(/.*epayment\.worldlink\.com\.np\/new\/internet-payment.*/, { timeout: 15000 });
+        // 2. FIX: Wrap the locator inside the expect block, and check the 'popup' tab context
+        await expect(popup.getByRole('heading', { name: 'Internet Payment', exact: true })).toBeVisible({ timeout: 15000 });
+
+        // 3. Clean up the tab when finished
         await popup.close();
     });
 
