@@ -7,7 +7,6 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
     let login;
     let accountsPage;
 
-  
     test.describe.configure({ mode: 'serial' });
 
     test.beforeEach(async ({ page }) => {
@@ -19,7 +18,7 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
         const user = loginData.find(acc => acc.username === 'aakashduwal');
         await login.open();
         await login.login(user.username, user.password);
-        await page.waitForURL('https://customer-portal.worldlink.com.np/', { timeout: 15000 });
+        await page.waitForURL('/eservice-login', { timeout: 15000 });
         
         const apiPromise = page.waitForResponse(response => 
             response.url().includes('/all_transactions') && response.status() === 200,
@@ -37,8 +36,7 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
         const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
         await login.open();
         await login.login(user.username, user.password);
-        
-        await page.waitForURL('https://customer-portal.worldlink.com.np/', { timeout: 15000 });
+        await page.waitForURL('/eservice-login', { timeout: 15000 });
         
         const apiPromise = page.waitForResponse(response => 
             response.url().includes('/all_transactions') && response.status() === 200,
@@ -51,5 +49,25 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
         const jsonBody = await response.json();
         const expectedOnlineData = jsonBody.response.online_payment; 
         await accountsPage.selectPaymentType('online');
+    });
+
+    test('TCA-03: Check if "make a payment" is clickable and redirects', async ({ page }) => {
+        const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
+        await login.open();
+        await login.login(user.username, user.password);
+        await page.waitForURL('/eservice-login', { timeout: 15000 });
+        
+        const apiPromise = page.waitForResponse(response => 
+            response.url().includes('/all_transactions') && response.status() === 200,
+            { timeout: 15000 }
+        );
+        
+        await accountsPage.accountLink.click();
+        await page.waitForURL('**/account-services', { timeout: 15000 });
+        await apiPromise;
+        await accountsPage.makePaymentBtn.click();
+        const targetURL = 'https://epayment.worldlink.com.np/new/internet-payment?gateway=khalti&username=dipeshjungthapa';
+        await page.waitForURL(targetURL, { timeout: 15000 });
+        expect(page.url()).toBe(targetURL);
     });
 });
