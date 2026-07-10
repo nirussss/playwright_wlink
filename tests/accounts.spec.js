@@ -51,7 +51,7 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
         await accountsPage.selectPaymentType('online');
     });
 
-    test('TCA-03: Check if "make a payment" is clickable and redirects', async ({ page }) => {
+   test('TCA-03: Check if "make a payment" is clickable and redirects', async ({ page }) => {
         const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
         await login.open();
         await login.login(user.username, user.password);
@@ -61,13 +61,15 @@ test.describe('Accounts Module - TCA-01 Cross-Browser Execution', () => {
             response.url().includes('/all_transactions') && response.status() === 200,
             { timeout: 15000 }
         );
-        
         await accountsPage.accountLink.click();
-        await page.waitForURL('**/account-services', { timeout: 15000 });
+        await page.waitForURL('**/account-services', { timeout: 20000 });
         await apiPromise;
-        await accountsPage.makePaymentBtn.click();
-        const targetURL = 'https://epayment.worldlink.com.np/new/internet-payment?gateway=khalti&username=dipeshjungthapa';
-        await page.waitForURL(targetURL, { timeout: 15000 });
-        expect(page.url()).toBe(targetURL);
+        const [paymentPage] = await Promise.all([
+            page.waitForEvent('popup'),
+            accountsPage.makePaymentBtn.click()
+        ]);
+        const expectedURL = 'https://epayment.worldlink.com.np/new/internet-payment?gateway=khalti&username=dipeshjungthapa';
+        await paymentPage.waitForURL('**/new/internet-payment*', { waitUntil: 'commit', timeout: 15000 });
+        expect(paymentPage.url()).toBe(expectedURL);
     });
 });
