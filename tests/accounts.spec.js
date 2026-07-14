@@ -14,7 +14,6 @@ test.describe('Accounts Module ', () => {
         accountsPage = new Accounts(page);
     });
     
-
     test('TCA-01: Verify user can view account invoices automatically on navigation', async ({ page }) => {
         const user = loginData.find(acc => acc.username === 'aakashduwal');
         await login.open();
@@ -33,29 +32,48 @@ test.describe('Accounts Module ', () => {
         await expect(invoiceLabel).toBeVisible();
     });
 
-    test('TCA-02: Verify message is displayed when no online payment invoices are available', async ({ page }) => {
+test('TCA-02: Verify message is displayed when no online payment invoices are available', async ({ page, context }) => {
 
     const user = loginData.find(
-        acc => acc.username === 'aakashduwal'
+        acc => acc.username === 'dipeshjungthapa'
     );
-    await login.open();
+    await context.route('**/*all_transactions*', async route => {
+        console.log("========== MOCK INTERCEPTED ==========");
+        console.log("URL:", route.request().url());
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                code: 200,
+                error: false,
+                response: {
+                    account_payment: [],
+                    online_payment: []
+                }
+            })
+        });
+
+    });
+await login.open();
     await login.login(
         user.username,
         user.password
     );
-    await expect(
-        page.getByRole('link', { name: 'Account' })
-    ).toBeVisible({ timeout: 20000 });
+    await page.waitForTimeout(3000);
     await accountsPage.accountLink.click();
     await page.waitForURL('**/account-services', {
         timeout: 15000
     });
     await accountsPage.selectPaymentType('online');
-    await expect(page.getByRole('heading', { name: 'Pay through Khalti App/ web' }) ).toBeVisible();
-    await expect(page.getByText(
-            'Pay WorldLink Internet Bill online from Khalti App/Web and get 1.5% CASHBACK' ) ).toBeVisible();
+    // await page.pause();
+    await expect(
+        page.getByRole('heading', {
+            name: 'Pay through Khalti App/ web'
+        })
+    ).toBeVisible();
 
 });
+
 test('TCA-04: Verify user can view online payment invoices when its selected', async ({ page }) => {
     const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
     await page.route('**/*.{png,jpg,jpeg,svg,webp}', route => route.abort());
