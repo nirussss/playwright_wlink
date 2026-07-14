@@ -33,60 +33,41 @@ test.describe('Accounts Module ', () => {
         await expect(invoiceLabel).toBeVisible();
     });
 
-    test('TCA-02: Verify online payment invoices using mocked API response', async ({ page }) => {
+    test('TCA-02: Verify message is displayed when no online payment invoices are available', async ({ page }) => {
 
     const user = loginData.find(
         acc => acc.username === 'aakashduwal'
     );
-
-await page.route('**/*all_transactions*', async route => {
-
-    console.log(" MOCK INTERCEPTED");
-
-    console.log(
-        "Request URL:",
-        route.request().url()
+    await login.open();
+    await login.login(
+        user.username,
+        user.password
     );
-
-    await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-            code: 200,
-            error: false,
-            response: {
-                account_payment: [],
-                online_payment: [
-                    {
-                        date: "2026-07-14",
-                        particular: "Ebill Payment",
-                        debit: null,
-                        credit: "16275",
-                        invoice_no: "999999",
-                        remarks: "Ebill Payment",
-                        operator: "SYSTEM",
-                        bill_number: "FY082/083-999999"
-                    }
-                ]
-            }
-        })
+    await expect(
+        page.getByRole('link', { name: 'Account' })
+    ).toBeVisible({ timeout: 20000 });
+    await accountsPage.accountLink.click();
+    await page.waitForURL('**/account-services', {
+        timeout: 15000
     });
+    await accountsPage.selectPaymentType('online');
+    await expect(page.getByRole('heading', { name: 'Pay through Khalti App/ web' }) ).toBeVisible();
+    await expect(page.getByText(
+            'Pay WorldLink Internet Bill online from Khalti App/Web and get 1.5% CASHBACK' ) ).toBeVisible();
 
 });
-    })
-
-// test('TCA-02: Verify user can view online payment invoices when its selected', async ({ page }) => {
-//     const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
-//     await page.route('**/*.{png,jpg,jpeg,svg,webp}', route => route.abort());
-//     await login.open();
-//     await login.login(user.username, user.password);
-//     await page.waitForURL('/eservice-login', { timeout: 15000 });
+test('TCA-04: Verify user can view online payment invoices when its selected', async ({ page }) => {
+    const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
+    await page.route('**/*.{png,jpg,jpeg,svg,webp}', route => route.abort());
+    await login.open();
+    await login.login(user.username, user.password);
+    await page.waitForURL('/eservice-login', { timeout: 15000 });
     
-//     await accountsPage.accountLink.click();
-//     await page.waitForURL('**/account-services', { timeout: 15000 });
-//     await accountsPage.selectPaymentType('online');
-//     await expect(page.locator('body')).toContainText('Invoice No:');
-// });
+    await accountsPage.accountLink.click();
+    await page.waitForURL('**/account-services', { timeout: 15000 });
+    await accountsPage.selectPaymentType('online');
+    await expect(page.locator('body')).toContainText('Invoice No:');
+});
 
    test('TCA-03: Check if "make a payment" is clickable and redirects', async ({ page }) => {
         const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
@@ -100,7 +81,7 @@ await page.route('**/*all_transactions*', async route => {
         
         await page.getByRole('link', { name: 'Account' }).click();
         await page.waitForURL('**/account-services', { timeout: 15000 });
-        await apiPromise; // Ensure backend data is completely downloaded
+        await apiPromise; 
         
         const [paymentPage] = await Promise.all([
             page.waitForEvent('popup'),
