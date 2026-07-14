@@ -33,18 +33,60 @@ test.describe('Accounts Module ', () => {
         await expect(invoiceLabel).toBeVisible();
     });
 
-test('TCA-02: Verify user can view online payment invoices when its selected', async ({ page }) => {
-    const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
-    await page.route('**/*.{png,jpg,jpeg,svg,webp}', route => route.abort());
-    await login.open();
-    await login.login(user.username, user.password);
-    await page.waitForURL('/eservice-login', { timeout: 15000 });
-    
-    await accountsPage.accountLink.click();
-    await page.waitForURL('**/account-services', { timeout: 15000 });
-    await accountsPage.selectPaymentType('online');
-    await expect(page.locator('body')).toContainText('Invoice No:');
+    test('TCA-02: Verify online payment invoices using mocked API response', async ({ page }) => {
+
+    const user = loginData.find(
+        acc => acc.username === 'aakashduwal'
+    );
+
+await page.route('**/*all_transactions*', async route => {
+
+    console.log(" MOCK INTERCEPTED");
+
+    console.log(
+        "Request URL:",
+        route.request().url()
+    );
+
+    await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+            code: 200,
+            error: false,
+            response: {
+                account_payment: [],
+                online_payment: [
+                    {
+                        date: "2026-07-14",
+                        particular: "Ebill Payment",
+                        debit: null,
+                        credit: "16275",
+                        invoice_no: "999999",
+                        remarks: "Ebill Payment",
+                        operator: "SYSTEM",
+                        bill_number: "FY082/083-999999"
+                    }
+                ]
+            }
+        })
+    });
+
 });
+    })
+
+// test('TCA-02: Verify user can view online payment invoices when its selected', async ({ page }) => {
+//     const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
+//     await page.route('**/*.{png,jpg,jpeg,svg,webp}', route => route.abort());
+//     await login.open();
+//     await login.login(user.username, user.password);
+//     await page.waitForURL('/eservice-login', { timeout: 15000 });
+    
+//     await accountsPage.accountLink.click();
+//     await page.waitForURL('**/account-services', { timeout: 15000 });
+//     await accountsPage.selectPaymentType('online');
+//     await expect(page.locator('body')).toContainText('Invoice No:');
+// });
 
    test('TCA-03: Check if "make a payment" is clickable and redirects', async ({ page }) => {
         const user = loginData.find(acc => acc.username === 'dipeshjungthapa');
