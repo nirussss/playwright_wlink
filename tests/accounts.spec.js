@@ -68,7 +68,7 @@ await login.open();
     // await page.pause();
     await expect(
         page.getByRole('heading', {
-            name: 'Pay through Khalti App/ web'
+            name: 'You dont have any recent payment'
         })
     ).toBeVisible();
 

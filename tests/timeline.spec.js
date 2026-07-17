@@ -5,6 +5,7 @@ import { getRandomValidUser } from '../utils/userHelper';
 
 
 test.describe('Timeline Module', () => {
+      test.describe.configure({mode: 'serial'})
 
     let login;
     let timeline;
