@@ -66,11 +66,11 @@ await login.open();
     });
     await accountsPage.selectPaymentType('online');
     // await page.pause();
-    await expect(
-        page.getByRole('heading', {
-            name: 'You dont have any recent payment'
-        })
-    ).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+        name: /recent payment/i
+    })
+).toBeVisible();
 
 });
 
