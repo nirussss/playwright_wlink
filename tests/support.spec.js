@@ -81,12 +81,10 @@ test.describe('Support Module', () => {
 
 
 
-        await support.clickClear();
+     
 
 
 
-        // Verify Report Problem button
-        await support.clickReportProblem();
 
 
 

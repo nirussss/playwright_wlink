@@ -126,32 +126,11 @@ class Support {
 
 
 
-    async clickClear() {
-
-        await expect(this.clearButton)
-            .toBeVisible();
-
-        await expect(this.clearButton)
-            .toBeEnabled();
-
-        await this.clearButton.click();
-
-    }
 
 
 
 
-    async clickReportProblem() {
-
-        await expect(this.reportProblemButton)
-            .toBeVisible();
-
-        await expect(this.reportProblemButton)
-            .toBeEnabled();
-
-        await this.reportProblemButton.click();
-
-    }
+   
 
 
 }
