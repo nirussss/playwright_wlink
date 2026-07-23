@@ -22,7 +22,7 @@ test.describe('Social Links Module', () => {
             user.username,
             user.password
         );
-        await page.waitForLoadState('networkidle');
+        // await page.waitForLoadState('networkidle');
 
         const fbPopup = page.waitForEvent('popup');
         await socialLinks.clickFacebook();

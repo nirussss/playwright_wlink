@@ -11,21 +11,45 @@ class LoginPage {
     this.passwordtoggleicon=page.getByRole('button', { name: 'toggle password visibility' });
   }
 
+  // async open() {
+  //   await this.page.goto('/eservice-login');
+  // }
+
+  // async login(user, pass) {
+  //   await expect(this.username).toBeVisible();
+  //   await this.username.fill(user);
+
+  //   await expect(this.password).toBeVisible();
+  //   await expect(this.password).toBeEnabled();
+  //   await this.password.fill(pass);
+
+  //   await expect(this.loginBtn).toBeEnabled();
+  //   await this.loginBtn.click();
+  // }
   async open() {
-    await this.page.goto('/eservice-login');
-  }
+  await this.page.goto('/eservice-login');
+  await this.page.waitForLoadState('networkidle'); // let hydration/JS settle
+}
 
-  async login(user, pass) {
-    await expect(this.username).toBeVisible();
+async login(user, pass) {
+  await expect(this.username).toBeVisible();
+
+  // Fill + verify + auto-retry if hydration wipes the value
+  await expect(async () => {
     await this.username.fill(user);
+    await expect(this.username).toHaveValue(user);
+  }).toPass({ timeout: 10000 });
 
-    await expect(this.password).toBeVisible();
-    await expect(this.password).toBeEnabled();
+  await expect(this.password).toBeVisible();
+  await expect(async () => {
     await this.password.fill(pass);
+    await expect(this.password).toHaveValue(pass);
+  }).toPass({ timeout: 10000 });
 
-    await expect(this.loginBtn).toBeEnabled();
-    await this.loginBtn.click();
-  }
+  await expect(this.loginBtn).toBeEnabled();
+  await this.loginBtn.click();
+}
+ 
 
   async directLogin() {
     await expect(this.directLoginBtn).toBeVisible();
