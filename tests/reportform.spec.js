@@ -15,12 +15,7 @@ test.describe('Support Module - Report Trouble Ticket', () => {
     reportPage = new ReportForm(page);
 
     await loginPage.open();
-    
-    // Call the verified login function from LoginPage class
     await loginPage.login('aakashduwal', 'Duwals@77');
-
-    // Wait until the dashboard/home interface is visible before opening modal
-    await expect(page.getByText('Support', { exact: true })).toBeVisible({ timeout: 20000 });
 
     await reportPage.openReportModal();
   });

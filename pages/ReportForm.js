@@ -4,22 +4,16 @@ import { expect } from '@playwright/test';
 class ReportForm {
   constructor(page) {
     this.page = page;
-
-    // Navigation & Modal triggers
     this.supportLink = page.getByText('Support', { exact: true });
     this.reportProblemBtn = page.getByRole('button', { name: 'Report Problem' });
     this.modalHeading = page.getByRole('heading', { name: 'Report Trouble Ticket' });
+    this.modal = page.locator('.MuiDialog-container, [role="dialog"]');
+    this.problemTypeDropdown = this.modal.locator('[role="button"][aria-haspopup="listbox"]').nth(0);
+    this.problemCategoryDropdown = this.modal.locator('[role="button"][aria-haspopup="listbox"]').nth(1);
 
-    // Dynamic Dropdowns
-    // MUI dropdowns: 1st is Problem Type, 2nd is Problem Category
-    this.problemTypeDropdown = page.getByRole('combobox').first().or(page.getByRole('button').nth(1));
-    this.problemCategoryDropdown = page.getByRole('combobox').nth(1).or(page.getByRole('button').nth(2));
+    this.descriptionInput = page.locator('textarea[maxlength="300"]');
 
-    // Form Fields
-    this.descriptionInput = page.getByRole('textbox');
     this.fileInput = page.locator('#ticket-attachments');
-    
-    // Action Buttons
     this.reportSubmitBtn = page.getByRole('button', { name: 'Report', exact: true });
   }
 
@@ -34,6 +28,7 @@ class ReportForm {
   }
 
   async selectProblemType(typeName) {
+    await expect(this.problemTypeDropdown).toBeVisible();
     await this.problemTypeDropdown.click();
     await this.page.getByRole('option', { name: typeName }).click();
   }
