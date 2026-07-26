@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "test@gmail.com",
+    "type": "valid"
+  },
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "12@gmail.com",
+    "type": "valid-but-weak"
+  },
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "notanemail",
+    "type": "invalid"
+  },
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "test@",
+    "type": "invalid"
+  },
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "test@.com",
+    "type": "invalid"
+  },
+  {
+    "name": "Test User",
+    "number": "9812345645",
+    "email": "@gmail.com",
+    "type": "invalid"
+  },
+  {
+    "name": "",
+    "number": "9812345645",
+    "email": "test@gmail.com",
+    "type": "missing-name"
+  },
+  {
+    "name": "Test User",
+    "number": "",
+    "email": "test@gmail.com",
+    "type": "missing-number"
+  },
+  {
+    "name": "Test User",
+    "number": "abc123",
+    "email": "test@gmail.com",
+    "type": "invalid-number"
+  }
+]

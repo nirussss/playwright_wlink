@@ -1,4 +1,4 @@
-// tests/api-intercept.spec.js
+//fake data diyera front end ma display garaako
 import { test, expect } from '@playwright/test';
 import LoginPage from '../pages/LoginPage';
 import Accounts from '../pages/Accounts';
