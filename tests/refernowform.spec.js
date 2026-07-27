@@ -17,15 +17,11 @@ test.describe('Refer Offer - location search', () => {
         await referForm.fillForm('Test User', '9812345645', 'test@gmail.com');
 
         await referForm.searchLocation('nagadesh');
-
-        // Error message should be gone after selecting a search suggestion
         await expect(referForm.locationErrorMsg).toBeHidden();
-
         const isEnabled = await referForm.isSubmitEnabled();
         console.log(`Submit enabled after valid location search: ${isEnabled}`);
         expect(isEnabled).toBe(true);
     });
-
     test('Invalid location search shows no results and submit stays disabled', async ({ page }) => {
         const login = new LoginPage(page);
         const referForm = new ReferNowForm(page);
@@ -41,8 +37,6 @@ test.describe('Refer Offer - location search', () => {
 
         // Confirm no suggestions appear for garbage input
         await expect(referForm.searchResults).toHaveCount(0, { timeout: 5000 });
-
-        // Submit should remain disabled since no location was ever selected
         const isEnabled = await referForm.isSubmitEnabled();
         console.log(`Submit enabled after invalid location search: ${isEnabled}`);
         expect(isEnabled).toBe(false);

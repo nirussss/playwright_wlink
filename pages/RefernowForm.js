@@ -34,8 +34,6 @@ class ReferNowForm {
  async searchLocation(query) {
     await this.locationSearchInput.click();
     await this.locationSearchInput.pressSequentially(query, { delay: 100 });
-
-    // Wait for the first suggestion to appear, then click it
     await this.searchResults.first().waitFor({ state: 'visible', timeout: 8000 });
     await this.searchResults.first().click();
 }
@@ -44,8 +42,6 @@ class ReferNowForm {
     await this.mapContainer.waitFor({ state: 'visible' });
     const box = await this.mapContainer.boundingBox(); //boundingBox() asks Playwright where exactly is the element positioned on the screen right now
     await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-
-    
     await expect(this.locationErrorMsg).toBeHidden({ timeout: 5000 });
   }
 
