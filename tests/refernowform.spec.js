@@ -1,27 +1,50 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import LoginPage from '../pages/LoginPage';
 import ReferNowForm from '../pages/ReferNowForm';
 import loginData from '../data/LoginData.json';
-import referData from '../data/ReferData.json';
 
-test.describe('Refer Offer form - field validation', () => {
+test.describe('Refer Offer - location search', () => {
 
-    for (const data of referData) {
-        test(`Type: ${data.type} - name: "${data.name}", number: "${data.number}", email: "${data.email}"`, async ({ page }) => {
+    test('Valid location search selects location and enables submit', async ({ page }) => {
+        const login = new LoginPage(page);
+        const referForm = new ReferNowForm(page);
+        const user = loginData.find(acc => acc.username === 'reenabade');
 
-            const login = new LoginPage(page);
-            const referForm = new ReferNowForm(page);
-            const user = loginData.find(acc => acc.username === 'reenabade');
+        await login.open();
+        await login.login(user.username, user.password);
 
-            await login.open();
-            await login.login(user.username, user.password);
+        await referForm.openReferForm();
+        await referForm.fillForm('Test User', '9812345645', 'test@gmail.com');
 
-            await referForm.openReferForm();
-            await referForm.fillForm(data.name, data.number, data.email);
-            await referForm.selectMapLocation();
+        await referForm.searchLocation('nagadesh');
 
-            const isEnabled = await referForm.isSubmitEnabled();
-            console.log(`[${data.type}] Submit enabled: ${isEnabled} (name: "${data.name}", number: "${data.number}", email: "${data.email}")`);
-        });
-    }
+        // Error message should be gone after selecting a search suggestion
+        await expect(referForm.locationErrorMsg).toBeHidden();
+
+        const isEnabled = await referForm.isSubmitEnabled();
+        console.log(`Submit enabled after valid location search: ${isEnabled}`);
+        expect(isEnabled).toBe(true);
+    });
+
+    test('Invalid location search shows no results and submit stays disabled', async ({ page }) => {
+        const login = new LoginPage(page);
+        const referForm = new ReferNowForm(page);
+        const user = loginData.find(acc => acc.username === 'reenabade');
+
+        await login.open();
+        await login.login(user.username, user.password);
+
+        await referForm.openReferForm();
+        await referForm.fillForm('Test User', '9812345645', 'test@gmail.com');
+
+        await referForm.locationSearchInput.fill('4514545');
+
+        // Confirm no suggestions appear for garbage input
+        await expect(referForm.searchResults).toHaveCount(0, { timeout: 5000 });
+
+        // Submit should remain disabled since no location was ever selected
+        const isEnabled = await referForm.isSubmitEnabled();
+        console.log(`Submit enabled after invalid location search: ${isEnabled}`);
+        expect(isEnabled).toBe(false);
+    });
 });
